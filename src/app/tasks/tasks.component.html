@@ -1,0 +1,53 @@
+<div class="container">
+  <div id="newtask">
+    <h1 class="head">My-ToDo-List</h1>
+    <input [(ngModel)]="newTask" type="text" placeholder="Add Tasks" />
+    <button id="push" (click)="addTask()">Add</button>
+  </div>
+  <div id="tasks">
+    <div
+      class="task"
+      *ngFor="let task of tasks"
+      [ngClass]="{ completed: task.completed }"
+    >
+      <span *ngIf="editingTask !== task.name; else editField" id="taskname">{{
+        task.name
+      }}</span>
+      <ng-template #editField>
+        <input type="text" [(ngModel)]="newTask" title="hi" />
+      </ng-template>
+      <button
+        class="delete"
+        *ngIf="editingTask !== task.name"
+        (click)="deleteTask(task)"
+        title="Delete"
+      >
+        <i class="far fa-trash-alt"></i> Del
+      </button>
+      <button
+        class="delete"
+        *ngIf="editingTask !== task.name"
+        (click)="editTask(task)"
+      >
+        Edit
+      </button>
+      <button
+        class="delete"
+        *ngIf="editingTask === task.name"
+        (click)="updateTask()"
+      >
+        Update
+      </button>
+      <button
+        class="delete"
+        *ngIf="editingTask === task.name"
+        (click)="cancelEdit()"
+      >
+        Cancel
+      </button>
+      <button class="complete" (click)="toggleComplete(task)">
+        {{ task.completed ? "Incomplete" : "Complete" }}
+      </button>
+    </div>
+  </div>
+</div>
