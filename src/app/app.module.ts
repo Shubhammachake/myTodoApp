@@ -1,8 +1,11 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms'; // Import FormsModule
+
 import { AppComponent } from './app.component';
 import { TasksComponent } from './tasks/tasks.component';
+import { TaskService } from './service.service';
 
 @NgModule({
   declarations: [
@@ -11,9 +14,10 @@ import { TasksComponent } from './tasks/tasks.component';
   ],
   imports: [
     BrowserModule,
-    FormsModule
+    HttpClientModule,
+    FormsModule // Add FormsModule here
   ],
-  providers: [],
+  providers: [TaskService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

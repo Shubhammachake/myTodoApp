@@ -10,15 +10,15 @@
       *ngFor="let task of tasks"
       [ngClass]="{ completed: task.completed }"
     >
-      <span *ngIf="editingTask !== task.name; else editField" id="taskname">{{
+      <span *ngIf="editingTaskId !== task.id; else editField" id="taskname">{{
         task.name
       }}</span>
       <ng-template #editField>
-        <input type="text" [(ngModel)]="newTask" title="hi" />
+        <input type="text" [(ngModel)]="newTask" title="hello" />
       </ng-template>
       <button
         class="delete"
-        *ngIf="editingTask !== task.name"
+        *ngIf="editingTaskId !== task.id"
         (click)="deleteTask(task)"
         title="Delete"
       >
@@ -26,21 +26,21 @@
       </button>
       <button
         class="delete"
-        *ngIf="editingTask !== task.name"
+        *ngIf="editingTaskId !== task.id"
         (click)="editTask(task)"
       >
         Edit
       </button>
       <button
         class="delete"
-        *ngIf="editingTask === task.name"
-        (click)="updateTask()"
+        *ngIf="editingTaskId === task.id"
+        (click)="updateTask(task)"
       >
         Update
       </button>
       <button
         class="delete"
-        *ngIf="editingTask === task.name"
+        *ngIf="editingTaskId === task.id"
         (click)="cancelEdit()"
       >
         Cancel

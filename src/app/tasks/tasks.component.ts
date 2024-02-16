@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+// tasks.component.ts
+import { Component, OnInit } from '@angular/core';
+import { TaskService } from '../service.service';
 
 @Component({
   selector: 'app-tasks',
@@ -6,44 +8,62 @@ import { Component } from '@angular/core';
   styleUrls: ['./tasks.component.css']
 })
 
-export class TasksComponent {
-  tasks: { name: string; completed: boolean }[] = [];
+export class TasksComponent implements OnInit {
+  tasks: { id: number; name: string; completed: boolean }[] = [];
   newTask: string = "";
-  editingTask: string | null = null; // Variable to store the task being edited
+  editingTaskId: number | null = null;
 
-  addTask() {
+  constructor(private taskService: TaskService) { }
+
+  ngOnInit(): void {
+    this.getTasks();
+  }
+
+  getTasks(): void {
+    this.taskService.getTasks()
+      .subscribe(tasks => this.tasks = tasks);
+  }
+
+  addTask(): void {
     if (this.newTask.trim() !== "") {
-      this.tasks.push({ name: this.newTask.trim(), completed: false });
-      this.newTask = "";
+      this.taskService.addTask({ name: this.newTask.trim(), completed: false })
+        .subscribe(task => {
+          this.tasks.push(task);
+          this.newTask = "";
+        });
     }
   }
 
-  deleteTask(task: { name: string; completed: boolean }) {
-    this.tasks = this.tasks.filter(ele => ele != task);
+  deleteTask(task: any): void {
+    this.taskService.deleteTask(task.id)
+      .subscribe(() => {
+        this.tasks = this.tasks.filter(t => t !== task);
+      });
   }
 
-  editTask(task: { name: string; completed: boolean }) {
-    this.editingTask = task.name;
-    this.newTask = task.name; // Pre-fill the input field with the task being edited
+  editTask(task: any): void {
+    this.editingTaskId = task.id;
+    this.newTask = task.name;
   }
 
-  updateTask() {
+  updateTask(task: any): void {
     if (this.newTask.trim() !== "") {
-      const index = this.tasks.findIndex(task => task.name === this.editingTask);
-      if (index !== -1) {
-        this.tasks[index].name = this.newTask.trim();
-        this.newTask = "";
-        this.editingTask = null;
-      }
+      this.taskService.updateTask(task.id, { name: this.newTask.trim(), completed: task.completed })
+        .subscribe(() => {
+          task.name = this.newTask.trim();
+          this.newTask = "";
+          this.editingTaskId = null;
+        });
     }
   }
 
-  cancelEdit() {
-    this.newTask = ""; // Clear input field
-    this.editingTask = null;
+  cancelEdit(): void {
+    this.newTask = "";
+    this.editingTaskId = null;
   }
 
-  toggleComplete(task: { name: string; completed: boolean }) {
+  toggleComplete(task: any): void {
     task.completed = !task.completed;
+    this.updateTask(task);
   }
 }
